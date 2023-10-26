@@ -1,0 +1,32 @@
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: instance 
+  namespace: openshift-logging 
+spec:
+  inputs:
+  - name: xrdlogs
+    application:
+      selector: 
+        matchLabels:
+          app: xrd               # this should match the pod's label
+      namespaces:
+      - testspace
+  outputs:
+  - name: syslogout
+    type: syslog
+    url: udp://192.168.32.4:514   # change server and port to rsyslog server being used
+    syslog:
+      addLogSource: true
+      facility: user
+      payloadKey: message
+      severity: informational 
+      tag: mytag    # can be used for filtering
+      rfc: RFC3164  # needed for tagging to work. Default is RFC5424
+  pipelines: 
+  - inputRefs:
+    #- application
+    - xrdlogs
+    name: test-app
+    outputRefs:
+    - syslogout
