@@ -11,3 +11,9 @@ input(type="imudp" port="514")
 sudo systemctl restart rsyslog.service 
 sudo systemctl is-active rsyslog.service 
 active
+
+# Crating a testpod
+```
+oc create ns testspace
+oc run testpod --image quay.io/sfhassan/newtools --namespace testspace --labels app=xrd  -- /bin/sh -c "while true; do echo Hello; sleep 10; done" 
+```
